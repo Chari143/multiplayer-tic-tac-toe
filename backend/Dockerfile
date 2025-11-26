@@ -10,4 +10,4 @@ RUN npm run build
 FROM heroiclabs/nakama:3.26.0
 COPY --from=build /app/build/index.js /nakama/data/modules/build/index.js
 ENV NAKAMA_RUNTIME_JS_ENTRYPOINT=/nakama/data/modules/build/index.js
-CMD /nakama/nakama migrate up --database.address ${DATABASE_URL} && exec /nakama/nakama --name nakama1 --database.address ${DATABASE_URL} --logger.level INFO --http.port ${PORT} --socket.port ${PORT}
+CMD /nakama/nakama migrate up --database.address ${DATABASE_URL} && exec /nakama/nakama --name nakama1 --database.address ${DATABASE_URL} --logger.level INFO --http.port ${PORT:-10000} --socket.port ${SOCKET_PORT:-10000}

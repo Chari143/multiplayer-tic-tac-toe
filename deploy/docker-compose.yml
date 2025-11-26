@@ -1,0 +1,34 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: ttt-postgres
+    environment:
+      POSTGRES_USER: nakama
+      POSTGRES_PASSWORD: nakama_pass
+      POSTGRES_DB: nakama
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks: [ttt]
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: ttt-backend
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: nakama:nakama_pass@postgres:5432/nakama?sslmode=disable
+      PORT: "10000"
+      SOCKET_PORT: "10000"
+    ports:
+      - "10000:10000"
+    networks: [ttt]
+
+  # No reverse proxy — connect directly to VPS IP on port 10000
+
+networks:
+  ttt:
+
+volumes:
+  pgdata:
