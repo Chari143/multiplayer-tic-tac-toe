@@ -1,22 +1,5 @@
-FROM node:18-alpine AS builder
-
-WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-RUN npm ci
-
-# Copy source and build
-COPY . .
-RUN npm run build
-
-# Production image
-FROM heroiclabs/nakama:3.22.0
-
-# Copy built module
-COPY --from=builder /app/build /nakama/data/modules
-
-# Expose ports
-EXPOSE 7350 7351
-
-# Nakama will be started by Render with environment variables
+FROM heroiclabs/nakama:3.26.0
+COPY nakama-config.yml /nakama/config/nakama.yml
+COPY build/index.js /nakama/data/modules/build/index.js
+ENV NAKAMA_RUNTIME_JS_ENTRYPOINT=/nakama/data/modules/build/index.js
+CMD /nakama/nakama migrate up --database.address ${DATABASE_URL} && exec /nakama/nakama --name nakama1 --config /nakama/config/nakama.yml --database.address ${DATABASE_URL} --logger.level INFO --http.port ${PORT}
