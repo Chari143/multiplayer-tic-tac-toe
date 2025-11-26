@@ -1,0 +1,22 @@
+logger:
+  level: "INFO"
+
+console:
+  port: 7351
+  username: "admin"
+  password: "admin"
+
+runtime:
+  js_entrypoint: "build/index.js"
+
+socket:
+  port: 7350
+  max_message_size_bytes: 4096
+
+matchmaker:
+  interval_sec: 1
+
+database:
+  addresses:
+    - "root@cockroach:26257"
+  name: "nakama"

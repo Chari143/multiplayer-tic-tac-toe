@@ -1,0 +1,38 @@
+version: "3.8"
+services:
+  cockroach:
+    image: cockroachdb/cockroach:v23.1.11
+    command: start-single-node --insecure --store=attrs=ssd,path=/var/lib/cockroach/
+    ports:
+      - "26257:26257"
+      - "8080:8080"
+    volumes:
+      - cockroach-data:/var/lib/cockroach
+
+  nakama:
+    image: heroiclabs/nakama:3.26.0
+    depends_on:
+      - cockroach
+    restart: unless-stopped
+    entrypoint:
+      - "/bin/sh"
+      - "-ecx"
+      - >
+        /nakama/nakama migrate up --database.address root@cockroach:26257 &&
+        exec /nakama/nakama --name nakama1 --config /nakama/config/nakama.yml --database.address root@cockroach:26257 --logger.level DEBUG
+    ports:
+      - "7350:7350"
+      - "7351:7351"
+    volumes:
+      - ./nakama-config.yml:/nakama/config/nakama.yml:ro
+      - ./:/nakama/data/modules:ro
+    environment:
+      - nakama_address=0.0.0.0
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7351/healthcheck"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  cockroach-data:

@@ -1,0 +1,11 @@
+{
+    "name": "ttt-backend",
+    "version": "1.0.0",
+    "scripts": {
+        "build": "npx -y tsc"
+    },
+    "devDependencies": {
+        "@types/node": "^20",
+        "typescript": "^5"
+    }
+}
