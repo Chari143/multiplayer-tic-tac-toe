@@ -38,11 +38,6 @@ logs/
 *.db
 *.sqlite
 
-# Extra documentation (not required by assessment)
-DEPLOYMENT.md
-EVALUATOR_GUIDE.md
-PRE_DEPLOYMENT_CHECKLIST.md
-
 # Temporary files
 *.tmp
 .cache/
